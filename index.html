@@ -18,7 +18,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 15px;
             color: #333;
         }
 
@@ -30,10 +30,12 @@
             height: 100%;
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            padding: 15px;
         }
 
         .auth-card, .popup-card {
@@ -41,7 +43,7 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            padding: 30px;
+            padding: 25px;
             border-radius: 24px;
             width: 100%;
             max-width: 400px;
@@ -52,6 +54,7 @@
             margin-bottom: 20px;
             color: #1e293b;
             text-align: center;
+            font-size: 20px;
         }
 
         .form-group {
@@ -105,29 +108,30 @@
             font-weight: 600;
         }
 
-        /* Asosiy Dashboard */
+        /* Asosiy Dashboard (Moslashuvchan) */
         .dashboard {
             display: none;
             width: 100%;
             max-width: 1100px;
-            height: 80vh;
+            height: 88vh;
             background: rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 28px;
+            border-radius: 24px;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: 260px 1fr;
         }
 
         .sidebar {
             background: rgba(255, 255, 255, 0.2);
             border-right: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 25px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            overflow-y: auto;
         }
 
         .logo-area {
@@ -136,26 +140,26 @@
             gap: 10px;
             font-weight: bold;
             color: #1e293b;
-            font-size: 15px;
-            margin-bottom: 25px;
+            font-size: 14px;
+            margin-bottom: 20px;
         }
 
         .user-profile-badge {
             background: rgba(255, 255, 255, 0.4);
-            padding: 10px 12px;
+            padding: 10px;
             border-radius: 14px;
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border: 1px solid rgba(255, 255, 255, 0.5);
             word-break: break-all;
         }
 
         .avatar-circle {
-            width: 35px;
-            height: 35px;
-            min-width: 35px;
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
             background: #4f46e5;
             color: white;
             border-radius: 50%;
@@ -163,19 +167,20 @@
             justify-content: center;
             align-items: center;
             font-weight: bold;
+            font-size: 14px;
         }
 
         .nav-links {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             flex-grow: 1;
         }
 
         .nav-links li a {
             display: block;
-            padding: 10px 15px;
+            padding: 10px 14px;
             color: #334155;
             text-decoration: none;
             border-radius: 10px;
@@ -199,6 +204,7 @@
             font-weight: 600;
             text-align: center;
             transition: background 0.2s;
+            font-size: 14px;
         }
 
         .logout-btn:hover {
@@ -206,7 +212,7 @@
         }
 
         .main-content {
-            padding: 30px;
+            padding: 25px;
             overflow-y: auto;
         }
 
@@ -214,11 +220,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .header-bar h1 {
-            font-size: 22px;
+            font-size: 20px;
             color: #1e293b;
         }
 
@@ -226,36 +234,37 @@
             background: #4f46e5;
             color: white;
             border: none;
-            padding: 10px 18px;
+            padding: 10px 16px;
             border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
 
         .search-bar {
             width: 100%;
-            padding: 12px 18px;
+            padding: 12px 16px;
             background: rgba(255, 255, 255, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 14px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             outline: none;
             font-size: 14px;
         }
 
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 15px;
         }
 
         .password-card {
             background: rgba(255, 255, 255, 0.45);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            padding: 20px;
+            padding: 18px;
             border-radius: 18px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
         }
@@ -264,29 +273,29 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             font-weight: 600;
             color: #1e293b;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .card-info {
             font-size: 13px;
             color: #475569;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             word-break: break-all;
         }
 
         .card-actions {
             display: flex;
-            gap: 8px;
-            margin-top: 15px;
+            gap: 6px;
+            margin-top: 12px;
         }
 
         .action-btn {
             flex: 1;
-            padding: 6px;
-            font-size: 12px;
+            padding: 6px 4px;
+            font-size: 11px;
             background: rgba(255, 255, 255, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.8);
             border-radius: 8px;
@@ -306,6 +315,70 @@
 
         .hidden {
             display: none !important;
+        }
+
+        /* MOBIL TELEFONLAR UCHUN MAXSUS MOSLASHUV (Responsive) */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+                height: auto;
+                min-height: 95vh;
+                border-radius: 20px;
+            }
+
+            .sidebar {
+                flex-direction: row;
+                align-items: center;
+                padding: 12px 15px;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+                gap: 10px;
+            }
+
+            .logo-area, .user-profile-badge, .nav-links {
+                display: none; /* Telefonda ortiqcha joy olmasligi uchun menyu qismlarini yig'amiz */
+            }
+
+            .sidebar .logout-btn {
+                width: auto;
+                padding: 6px 12px;
+                font-size: 12px;
+                margin: 0;
+            }
+
+            /* Mobil versiyada yuqori qismga mini-profil qo'shamiz */
+            .mobile-top-user {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 12px;
+                color: #1e293b;
+                font-weight: 600;
+                word-break: break-all;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+
+            .header-bar h1 {
+                font-size: 18px;
+            }
+        }
+
+        /* Kompyuterda mobil elementni ko'rsatmaslik */
+        .mobile-top-user {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .mobile-top-user {
+                display: flex;
+            }
         }
     </style>
 </head>
@@ -374,6 +447,13 @@
                     <li><a href="#">Sozlamalar</a></li>
                 </ul>
             </div>
+            
+            <!-- Mobil uchun qisqa profil qismi -->
+            <div class="mobile-top-user">
+                <div class="avatar-circle" id="mobileAvatar" style="width: 28px; height: 28px; min-width: 28px; font-size: 12px;">G</div>
+                <span id="mobileDisplayEmail">email...</span>
+            </div>
+
             <div class="logout-btn" onclick="logoutUser()">Chiqish</div>
         </div>
 
@@ -401,7 +481,6 @@
             }
         };
 
-        // Kirish va Ro'yxatdan o'tish rejimini almashtirish
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
             let title = document.getElementById('authTitle');
@@ -419,7 +498,6 @@
             }
         }
 
-        // Autentifikatsiya jarayoni (LocalStorage bazasi bilan tekshirish)
         function handleAuth() {
             let email = document.getElementById('authEmail').value.trim().toLowerCase();
             let pass = document.getElementById('authPassword').value.trim();
@@ -441,7 +519,6 @@
                     alert('Bu Gmail allaqachon ro\'yxatdan o\'tgan! Iltimos, kiring.');
                     return;
                 }
-                // Yangi foydalanuvchini saqlash
                 users[email] = { password: pass };
                 localStorage.setItem('sp_users', JSON.stringify(users));
                 alert('Muvaffaqiyatli ro\'yxatdan o\'tdingiz!');
@@ -463,6 +540,9 @@
             
             document.getElementById('displayUserEmail').innerText = currentEmail;
             document.getElementById('userAvatar').innerText = currentEmail.charAt(0).toUpperCase();
+
+            document.getElementById('mobileDisplayEmail').innerText = currentEmail;
+            document.getElementById('mobileAvatar').innerText = currentEmail.charAt(0).toUpperCase();
             
             renderPasswords();
         }
@@ -483,7 +563,6 @@
             document.getElementById('appPassword').value = '';
         }
 
-        // Har bir foydalanuvchining o'zining parollar bazasi
         function getUserPasswordsKey() {
             return 'sp_passwords_' + currentEmail;
         }
@@ -525,7 +604,7 @@
             let filtered = passwords.filter(p => p.name.toLowerCase().includes(filterText.toLowerCase()) || p.login.toLowerCase().includes(filterText.toLowerCase()));
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<p style="color: #475569; grid-column: 1/-1;">Hozircha saqlangan parollar yo'q.</p>`;
+                grid.innerHTML = `<p style="color: #475569; grid-column: 1/-1; font-size: 14px;">Hozircha saqlangan parollar yo'q.</p>`;
                 return;
             }
 
