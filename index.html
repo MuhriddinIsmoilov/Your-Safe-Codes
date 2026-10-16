@@ -108,7 +108,7 @@
             font-weight: 600;
         }
 
-        /* Asosiy Dashboard (Moslashuvchan) */
+        /* Asosiy Dashboard */
         .dashboard {
             display: none;
             width: 100%;
@@ -225,9 +225,25 @@
             flex-wrap: wrap;
         }
 
-        .header-bar h1 {
-            font-size: 20px;
+        .welcome-banner {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 20px;
+            border-radius: 18px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .welcome-banner h2 {
+            font-size: 18px;
             color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .welcome-banner p {
+            font-size: 14px;
+            color: #475569;
+            line-height: 1.5;
         }
 
         .add-btn {
@@ -277,6 +293,20 @@
             font-weight: 600;
             color: #1e293b;
             font-size: 15px;
+            gap: 10px;
+        }
+
+        .app-identity {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .app-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            object-fit: contain;
         }
 
         .card-info {
@@ -317,7 +347,7 @@
             display: none !important;
         }
 
-        /* MOBIL TELEFONLAR UCHUN MAXSUS MOSLASHUV (Responsive) */
+        /* MOBIL TELEFONLAR UCHUN */
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -341,7 +371,7 @@
             }
 
             .logo-area, .user-profile-badge, .nav-links {
-                display: none; /* Telefonda ortiqcha joy olmasligi uchun menyu qismlarini yig'amiz */
+                display: none;
             }
 
             .sidebar .logout-btn {
@@ -351,7 +381,6 @@
                 margin: 0;
             }
 
-            /* Mobil versiyada yuqori qismga mini-profil qo'shamiz */
             .mobile-top-user {
                 display: flex;
                 align-items: center;
@@ -365,13 +394,8 @@
             .main-content {
                 padding: 15px;
             }
-
-            .header-bar h1 {
-                font-size: 18px;
-            }
         }
 
-        /* Kompyuterda mobil elementni ko'rsatmaslik */
         .mobile-top-user {
             display: none;
         }
@@ -411,8 +435,8 @@
         <div class="popup-card">
             <h3>Yangi Parol Qo'shish</h3>
             <div class="form-group">
-                <label>Ilova nomi (Sayt):</label>
-                <input type="text" id="appName" placeholder="Masalan: Telegram">
+                <label>Ilova yoki Sayt nomi:</label>
+                <input type="text" id="appName" placeholder="Masalan: Telegram, Instagram, Gmail">
             </div>
             <div class="form-group">
                 <label>Login / Email / Username:</label>
@@ -448,7 +472,6 @@
                 </ul>
             </div>
             
-            <!-- Mobil uchun qisqa profil qismi -->
             <div class="mobile-top-user">
                 <div class="avatar-circle" id="mobileAvatar" style="width: 28px; height: 28px; min-width: 28px; font-size: 12px;">G</div>
                 <span id="mobileDisplayEmail">email...</span>
@@ -459,8 +482,15 @@
 
         <div class="main-content">
             <div class="header-bar">
-                <h1>Xush kelibsiz!</h1>
+                <h1>Shaxsiy Kabinet</h1>
                 <button class="add-btn" onclick="openAddModal()">+ Yangi Parol Qo'shish</button>
+            </div>
+
+            <!-- Xush kelibsiz banneri -->
+            <div class="welcome-banner">
+                <h2>Salom 👋</h2>
+                <p>😵‍💫 Kodlaringiz yodingizda qolmayaptimi bu sayt aynan 🫵 <b>[SIZ]</b> uchun.<br>
+                ⛓️‍💥 Hohlagan platformangiz Login va Parollarini shu yerda xavfsiz saqlang 🛡</p>
             </div>
 
             <input type="text" class="search-bar" id="searchInput" placeholder="Ilovani qidirish..." onkeyup="filterPasswords()">
@@ -595,6 +625,21 @@
             renderPasswords();
         }
 
+        // Ilova nomidan kelib chiqib rasmini (favicon) topish funksiyasi
+        function getAppIcon(appName) {
+            let domain = appName.toLowerCase().replace(/\s+/g, '') + '.com';
+            // Maxsus mashhur ilovalar uchun aniq domena formatlari
+            if (appName.toLowerCase().includes('telegram')) domain = 'telegram.org';
+            else if (appName.toLowerCase().includes('instagram')) domain = 'instagram.com';
+            else if (appName.toLowerCase().includes('google')) domain = 'google.com';
+            else if (appName.toLowerCase().includes('youtube')) domain = 'youtube.com';
+            else if (appName.toLowerCase().includes('facebook')) domain = 'facebook.com';
+            else if (appName.toLowerCase().includes('github')) domain = 'github.com';
+            else if (appName.toLowerCase().includes('spotify')) domain = 'spotify.com';
+
+            return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+        }
+
         function renderPasswords(filterText = '') {
             let userKey = getUserPasswordsKey();
             let passwords = JSON.parse(localStorage.getItem(userKey)) || [];
@@ -610,11 +655,15 @@
 
             filtered.forEach(item => {
                 let displayPass = item.show ? item.pass : '••••••••';
+                let iconUrl = getAppIcon(item.name);
                 let card = document.createElement('div');
                 card.className = 'password-card';
                 card.innerHTML = `
                     <div class="card-header">
-                        <span>${item.name}</span>
+                        <div class="app-identity">
+                            <img src="${iconUrl}" class="app-icon" onerror="this.style.display='none'">
+                            <span>${item.name}</span>
+                        </div>
                     </div>
                     <div class="card-info">Login: ${item.login}</div>
                     <div class="card-info">Parol: <b>${displayPass}</b></div>
