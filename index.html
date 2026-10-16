@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save Password - Shaxsiy Parollar Menejeri</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 50%, #fbc2eb 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* Modal / Kirish oyna uslubi */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .auth-card, .popup-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 30px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-card h2, .popup-card h3 {
+            margin-bottom: 20px;
+            color: #1e293b;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            outline: none;
+            font-size: 14px;
+            color: #1e293b;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: #4f46e5;
+            color: white;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #4338ca;
+        }
+
+        /* Asosiy Dashboard (Dizayn) */
+        .dashboard {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            height: 80vh;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 28px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            display: none; /* JS orqali ochiladi */
+            overflow: hidden;
+            grid-template-columns: 280px 1fr;
+        }
+
+        /* Chap Panel */
+        .sidebar {
+            background: rgba(255, 255, 255, 0.2);
+            border-right: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            color: #1e293b;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .user-profile-badge {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 10px 15px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .avatar-circle {
+            width: 35px;
+            height: 35px;
+            background: #4f46e5;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .nav-links li a {
+            display: block;
+            padding: 10px 15px;
+            color: #334155;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+
+        .nav-links li.active a, .nav-links li a:hover {
+            background: rgba(255, 255, 255, 0.6);
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            color: #dc2626;
+            font-weight: 600;
+            text-align: center;
+            transition: background 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Asosiy Kontent Maydoni */
+        .main-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .header-bar h1 {
+            font-size: 22px;
+            color: #1e293b;
+        }
+
+        .add-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 14px;
+            margin-bottom: 25px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        /* Kartochkalar Grid tizimi */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .password-card {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 20px;
+            border-radius: 18px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 16px;
+        }
+
+        .card-info {
+            font-size: 13px;
+            color: #475569;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 6px;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            cursor: pointer;
+            color: #334155;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .action-btn.delete {
+            color: #dc2626;
+        }
+
+        /* Modal oyna (Yangi parol qo'shish uchun) */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. KIRISH / ISMNI KIRITISH OYNASI -->
+    <div id="authModal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>🔒 Save Password</h2>
+            <div class="form-group">
+                <label for="userNameInput">Ismingizni kiriting:</label>
+                <input type="text" id="userNameInput" placeholder="Masalan: Aziz">
+            </div>
+            <button class="btn" onclick="loginUser()">Kirish</button>
+        </div>
+    </div>
+
+    <!-- 2. YANGI PAROL QO'SHISH MODALI -->
+    <div id="addModal" class="modal-overlay hidden">
+        <div class="popup-card">
+            <h3>Yangi Parol Qo'shish</h3>
+            <div class="form-group">
+                <label>Ilova nomi (Sayt):</label>
+                <input type="text" id="appName" placeholder="Masalan: Telegram">
+            </div>
+            <div class="form-group">
+                <label>Login / Email / Username:</label>
+                <input type="text" id="appLogin" placeholder="Login yoki telefon raqam">
+            </div>
+            <div class="form-group">
+                <label>Parol:</label>
+                <input type="text" id="appPassword" placeholder="Maxfiy parol">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn" onclick="savePassword()">Saqlash</button>
+                <button class="btn" style="background: #94a3b8;" onclick="closeAddModal()">Bekor qilish</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. ASOSIY DASHBOARD (PANEL) -->
+    <div id="dashboard" class="dashboard" style="display: none;">
+        <!-- Chap menyu -->
+        <div class="sidebar">
+            <div>
+                <div class="logo-area">
+                    <span>🛡️ SAVE PASSWORD</span>
+                </div>
+                <div class="user-profile-badge">
+                    <div class="avatar-circle" id="userAvatar">A</div>
+                    <span id="displayUserName" style="font-weight: 600; font-size: 14px;">Foydalanuvchi</span>
+                </div>
+                <ul class="nav-links">
+                    <li class="active"><a href="#">Barcha parollar</a></li>
+                    <li><a href="#" onclick="openAddModal()">+ Yangi qo'shish</a></li>
+                    <li><a href="#">Xavfsizlik</a></li>
+                    <li><a href="#">Sozlamalar</a></li>
+                </ul>
+            </div>
+            <div class="logout-btn" onclick="logoutUser()">Chiqish</div>
+        </div>
+
+        <!-- O'ng asosiy qism -->
+        <div class="main-content">
+            <div class="header-bar">
+                <h1 id="welcomeGreeting">Xush kelibsiz!</h1>
+                <button class="add-btn" onclick="openAddModal()">+ Yangi Parol Qo'shish</button>
+            </div>
+
+            <input type="text" class="search-bar" id="searchInput" placeholder="Ilovani qidirish..." onkeyup="filterPasswords()">
+
+            <div class="cards-grid" id="passwordsGrid">
+                <!-- Parollar kartochkalari shu yerga dinamik qo'shiladi -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = localStorage.getItem('sp_username');
+        let passwords = JSON.parse(localStorage.getItem('sp_passwords')) || [
+            { id: 1, name: 'Gmail', login: 'example@gmail.com', pass: 'my_sec_pass123', show: false },
+            { id: 2, name: 'Telegram', login: '@username', pass: 'telegramSecure99', show: false }
+        ];
+
+        // Sahifa yuklanganda tekshirish
+        window.onload = function() {
+            if (currentUser) {
+                showDashboard();
+            }
+        };
+
+        function loginUser() {
+            let nameInput = document.getElementById('userNameInput').value.trim();
+            if (!nameInput) {
+                alert('Iltimos, ismingizni kiriting!');
+                return;
+            }
+            currentUser = nameInput;
+            localStorage.setItem('sp_username', currentUser);
+            showDashboard();
+        }
+
+        function showDashboard() {
+            document.getElementById('authModal').classList.add('hidden');
+            document.getElementById('dashboard').style.display = 'grid';
+            
+            // Foydalanuvchi ma'lumotlarini joylash
+            document.getElementById('displayUserName').innerText = currentUser;
+            document.getElementById('userAvatar').innerText = currentUser.charAt(0).toUpperCase();
+            document.getElementById('welcomeGreeting').innerText = `Xush kelibsiz, ${currentUser}!`;
+            
+            renderPasswords();
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('sp_username');
+            location.reload();
+        }
+
+        function openAddModal() {
+            document.getElementById('addModal').classList.remove('hidden');
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').classList.add('hidden');
+            document.getElementById('appName').value = '';
+            document.getElementById('appLogin').value = '';
+            document.getElementById('appPassword').value = '';
+        }
+
+        function savePassword() {
+            let name = document.getElementById('appName').value.trim();
+            let login = document.getElementById('appLogin').value.trim();
+            let pass = document.getElementById('appPassword').value.trim();
+
+            if (!name || !login || !pass) {
+                alert('Barcha maydonlarni to\'ldiring!');
+                return;
+            }
+
+            let newObj = {
+                id: Date.now(),
+                name: name,
+                login: login,
+                pass: pass,
+                show: false
+            };
+
+            passwords.push(newObj);
+            localStorage.setItem('sp_passwords', JSON.stringify(passwords));
+            
+            closeAddModal();
+            renderPasswords();
+        }
+
+        function renderPasswords(filterText = '') {
+            let grid = document.getElementById('passwordsGrid');
+            grid.innerHTML = '';
+
+            let filtered = passwords.filter(p => p.name.toLowerCase().includes(filterText.toLowerCase()) || p.login.toLowerCase().includes(filterText.toLowerCase()));
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<p style="color: #475569; grid-column: 1/-1;">Hozircha saqlangan parollar yo'q.</p>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                let displayPass = item.show ? item.pass : '••••••••';
+                let card = document.createElement('div');
+                card.className = 'password-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span>${item.name}</span>
+                    </div>
+                    <div class="card-info">Login: ${item.login}</div>
+                    <div class="card-info">Parol: <b>${displayPass}</b></div>
+                    <div class="card-actions">
+                        <button class="action-btn" onclick="togglePass(${item.id})">${item.show ? 'Yashirish' : 'Ko\'rish'}</button>
+                        <button class="action-btn" onclick="copyPass('${item.pass}')">Nusxalash</button>
+                        <button class="action-btn delete" onclick="deletePass(${item.id})">O'chirish</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function togglePass(id) {
+            passwords = passwords.map(p => {
+                if (p.id === id) p.show = !p.show;
+                return p;
+            });
+            renderPasswords(document.getElementById('searchInput').value);
+        }
+
+        function copyPass(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Parol nusxalandi!');
+            });
+        }
+
+        function deletePass(id) {
+            if (confirm('Rostdan ham bu parolni o\'chirmoqchimisiz?')) {
+                passwords = passwords.filter(p => p.id !== id);
+                localStorage.setItem('sp_passwords', JSON.stringify(passwords));
+                renderPasswords(document.getElementById('searchInput').value);
+            }
+        }
+
+        function filterPasswords() {
+            let query = document.getElementById('searchInput').value;
+            renderPasswords(query);
+        }
+    </script>
+</body>
+</html>
