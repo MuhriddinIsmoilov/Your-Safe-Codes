@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Save Password - Shaxsiy Parollar Menejeri</title>
+    <title>Save Password - Shaxsiy Kabinet</title>
     <style>
         * {
             margin: 0;
@@ -22,7 +22,6 @@
             color: #333;
         }
 
-        /* Modal / Kirish oyna uslubi */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -38,7 +37,7 @@
         }
 
         .auth-card, .popup-card {
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.45);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.6);
@@ -93,7 +92,20 @@
             background: #4338ca;
         }
 
-        /* Asosiy Dashboard (Dizayn) */
+        .switch-auth {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #475569;
+            cursor: pointer;
+        }
+
+        .switch-auth span {
+            color: #4f46e5;
+            font-weight: 600;
+        }
+
+        /* Asosiy Dashboard */
         .dashboard {
             display: none;
             width: 100%;
@@ -105,12 +117,10 @@
             border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: 28px;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
-            display: none; /* JS orqali ochiladi */
             overflow: hidden;
             grid-template-columns: 280px 1fr;
         }
 
-        /* Chap Panel */
         .sidebar {
             background: rgba(255, 255, 255, 0.2);
             border-right: 1px solid rgba(255, 255, 255, 0.4);
@@ -126,24 +136,26 @@
             gap: 10px;
             font-weight: bold;
             color: #1e293b;
-            font-size: 16px;
-            margin-bottom: 30px;
+            font-size: 15px;
+            margin-bottom: 25px;
         }
 
         .user-profile-badge {
             background: rgba(255, 255, 255, 0.4);
-            padding: 10px 15px;
+            padding: 10px 12px;
             border-radius: 14px;
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 20px;
             border: 1px solid rgba(255, 255, 255, 0.5);
+            word-break: break-all;
         }
 
         .avatar-circle {
             width: 35px;
             height: 35px;
+            min-width: 35px;
             background: #4f46e5;
             color: white;
             border-radius: 50%;
@@ -193,7 +205,6 @@
             background: rgba(239, 68, 68, 0.1);
         }
 
-        /* Asosiy Kontent Maydoni */
         .main-content {
             padding: 30px;
             overflow-y: auto;
@@ -234,7 +245,6 @@
             font-size: 14px;
         }
 
-        /* Kartochkalar Grid tizimi */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -294,7 +304,6 @@
             color: #dc2626;
         }
 
-        /* Modal oyna (Yangi parol qo'shish uchun) */
         .hidden {
             display: none !important;
         }
@@ -302,15 +311,25 @@
 </head>
 <body>
 
-    <!-- 1. KIRISH / ISMNI KIRITISH OYNASI -->
+    <!-- 1. KIRISH / RO'YXATDAN O'TISH OYNASI -->
     <div id="authModal" class="modal-overlay">
         <div class="auth-card">
-            <h2>🔒 Save Password</h2>
+            <h2 id="authTitle">🔒 Gmail bilan Kirish</h2>
+            
             <div class="form-group">
-                <label for="userNameInput">Ismingizni kiriting:</label>
-                <input type="text" id="userNameInput" placeholder="Masalan: Aziz">
+                <label>Gmail manzili:</label>
+                <input type="email" id="authEmail" placeholder="example@gmail.com">
             </div>
-            <button class="btn" onclick="loginUser()">Kirish</button>
+            <div class="form-group">
+                <label>Parol:</label>
+                <input type="password" id="authPassword" placeholder="Maxfiy parolingiz">
+            </div>
+
+            <button class="btn" id="authBtn" onclick="handleAuth()">Kirish</button>
+            
+            <div class="switch-auth" id="switchText" onclick="toggleAuthMode()">
+                Akkauntingiz yo'qmi? <span>Ro'yxatdan o'tish</span>
+            </div>
         </div>
     </div>
 
@@ -337,17 +356,16 @@
         </div>
     </div>
 
-    <!-- 3. ASOSIY DASHBOARD (PANEL) -->
-    <div id="dashboard" class="dashboard" style="display: none;">
-        <!-- Chap menyu -->
+    <!-- 3. ASOSIY DASHBOARD (SHAXSIY KABINET) -->
+    <div id="dashboard" class="dashboard">
         <div class="sidebar">
             <div>
                 <div class="logo-area">
                     <span>🛡️ SAVE PASSWORD</span>
                 </div>
                 <div class="user-profile-badge">
-                    <div class="avatar-circle" id="userAvatar">A</div>
-                    <span id="displayUserName" style="font-weight: 600; font-size: 14px;">Foydalanuvchi</span>
+                    <div class="avatar-circle" id="userAvatar">G</div>
+                    <span id="displayUserEmail" style="font-size: 13px; font-weight: 500;">email@gmail.com</span>
                 </div>
                 <ul class="nav-links">
                     <li class="active"><a href="#">Barcha parollar</a></li>
@@ -359,43 +377,83 @@
             <div class="logout-btn" onclick="logoutUser()">Chiqish</div>
         </div>
 
-        <!-- O'ng asosiy qism -->
         <div class="main-content">
             <div class="header-bar">
-                <h1 id="welcomeGreeting">Xush kelibsiz!</h1>
+                <h1>Xush kelibsiz!</h1>
                 <button class="add-btn" onclick="openAddModal()">+ Yangi Parol Qo'shish</button>
             </div>
 
             <input type="text" class="search-bar" id="searchInput" placeholder="Ilovani qidirish..." onkeyup="filterPasswords()">
 
             <div class="cards-grid" id="passwordsGrid">
-                <!-- Parollar kartochkalari shu yerga dinamik qo'shiladi -->
+                <!-- Parollar kartochkalari -->
             </div>
         </div>
     </div>
 
     <script>
-        let currentUser = localStorage.getItem('sp_username');
-        let passwords = JSON.parse(localStorage.getItem('sp_passwords')) || [
-            { id: 1, name: 'Gmail', login: 'example@gmail.com', pass: 'my_sec_pass123', show: false },
-            { id: 2, name: 'Telegram', login: '@username', pass: 'telegramSecure99', show: false }
-        ];
+        let isRegisterMode = false;
+        let currentEmail = localStorage.getItem('sp_current_user');
 
-        // Sahifa yuklanganda tekshirish
         window.onload = function() {
-            if (currentUser) {
+            if (currentEmail) {
                 showDashboard();
             }
         };
 
-        function loginUser() {
-            let nameInput = document.getElementById('userNameInput').value.trim();
-            if (!nameInput) {
-                alert('Iltimos, ismingizni kiriting!');
+        // Kirish va Ro'yxatdan o'tish rejimini almashtirish
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            let title = document.getElementById('authTitle');
+            let btn = document.getElementById('authBtn');
+            let switchText = document.getElementById('switchText');
+
+            if (isRegisterMode) {
+                title.innerText = "📝 Ro'yxatdan o'tish";
+                btn.innerText = "Ro'yxatdan o'tish";
+                switchText.innerHTML = "Akkauntingiz bormi? <span>Kirish</span>";
+            } else {
+                title.innerText = "🔒 Gmail bilan Kirish";
+                btn.innerText = "Kirish";
+                switchText.innerHTML = "Akkauntingiz yo'qmi? <span>Ro'yxatdan o'tish</span>";
+            }
+        }
+
+        // Autentifikatsiya jarayoni (LocalStorage bazasi bilan tekshirish)
+        function handleAuth() {
+            let email = document.getElementById('authEmail').value.trim().toLowerCase();
+            let pass = document.getElementById('authPassword').value.trim();
+
+            if (!email || !pass) {
+                alert('Iltimos, Gmail va parolni kiriting!');
                 return;
             }
-            currentUser = nameInput;
-            localStorage.setItem('sp_username', currentUser);
+
+            if (!email.endsWith('@gmail.com')) {
+                alert('Iltimos, haqiqiy Gmail manzilini kiriting (@gmail.com)!');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('sp_users')) || {};
+
+            if (isRegisterMode) {
+                if (users[email]) {
+                    alert('Bu Gmail allaqachon ro\'yxatdan o\'tgan! Iltimos, kiring.');
+                    return;
+                }
+                // Yangi foydalanuvchini saqlash
+                users[email] = { password: pass };
+                localStorage.setItem('sp_users', JSON.stringify(users));
+                alert('Muvaffaqiyatli ro\'yxatdan o\'tdingiz!');
+            } else {
+                if (!users[email] || users[email].password !== pass) {
+                    alert('Gmail yoki parol xato!');
+                    return;
+                }
+            }
+
+            currentEmail = email;
+            localStorage.setItem('sp_current_user', currentEmail);
             showDashboard();
         }
 
@@ -403,16 +461,14 @@
             document.getElementById('authModal').classList.add('hidden');
             document.getElementById('dashboard').style.display = 'grid';
             
-            // Foydalanuvchi ma'lumotlarini joylash
-            document.getElementById('displayUserName').innerText = currentUser;
-            document.getElementById('userAvatar').innerText = currentUser.charAt(0).toUpperCase();
-            document.getElementById('welcomeGreeting').innerText = `Xush kelibsiz, ${currentUser}!`;
+            document.getElementById('displayUserEmail').innerText = currentEmail;
+            document.getElementById('userAvatar').innerText = currentEmail.charAt(0).toUpperCase();
             
             renderPasswords();
         }
 
         function logoutUser() {
-            localStorage.removeItem('sp_username');
+            localStorage.removeItem('sp_current_user');
             location.reload();
         }
 
@@ -427,6 +483,11 @@
             document.getElementById('appPassword').value = '';
         }
 
+        // Har bir foydalanuvchining o'zining parollar bazasi
+        function getUserPasswordsKey() {
+            return 'sp_passwords_' + currentEmail;
+        }
+
         function savePassword() {
             let name = document.getElementById('appName').value.trim();
             let login = document.getElementById('appLogin').value.trim();
@@ -437,6 +498,9 @@
                 return;
             }
 
+            let userKey = getUserPasswordsKey();
+            let passwords = JSON.parse(localStorage.getItem(userKey)) || [];
+
             let newObj = {
                 id: Date.now(),
                 name: name,
@@ -446,13 +510,15 @@
             };
 
             passwords.push(newObj);
-            localStorage.setItem('sp_passwords', JSON.stringify(passwords));
+            localStorage.setItem(userKey, JSON.stringify(passwords));
             
             closeAddModal();
             renderPasswords();
         }
 
         function renderPasswords(filterText = '') {
+            let userKey = getUserPasswordsKey();
+            let passwords = JSON.parse(localStorage.getItem(userKey)) || [];
             let grid = document.getElementById('passwordsGrid');
             grid.innerHTML = '';
 
@@ -484,10 +550,13 @@
         }
 
         function togglePass(id) {
+            let userKey = getUserPasswordsKey();
+            let passwords = JSON.parse(localStorage.getItem(userKey)) || [];
             passwords = passwords.map(p => {
                 if (p.id === id) p.show = !p.show;
                 return p;
             });
+            localStorage.setItem(userKey, JSON.stringify(passwords));
             renderPasswords(document.getElementById('searchInput').value);
         }
 
@@ -499,8 +568,10 @@
 
         function deletePass(id) {
             if (confirm('Rostdan ham bu parolni o\'chirmoqchimisiz?')) {
+                let userKey = getUserPasswordsKey();
+                let passwords = JSON.parse(localStorage.getItem(userKey)) || [];
                 passwords = passwords.filter(p => p.id !== id);
-                localStorage.setItem('sp_passwords', JSON.stringify(passwords));
+                localStorage.setItem(userKey, JSON.stringify(passwords));
                 renderPasswords(document.getElementById('searchInput').value);
             }
         }
